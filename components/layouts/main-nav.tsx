@@ -18,6 +18,18 @@ const MainNav: React.FC<MainNavProps> = ({ items }) => {
         </span>
         <span className="sr-only">Home</span>
       </Link>
+
+      {/* <nav className="flex items-center space-x-4">
+        {items.map(item => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className="flex items-center space-x-2"
+          >
+            <span>{item.label}</span>
+          </Link>
+        ))}
+      </nav> */}
     </div>
   );
 };

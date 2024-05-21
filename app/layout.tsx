@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/providers/providers";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/layouts/site-header";
 import Footer from "@/components/layouts/site-footer";
+import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +23,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <head />
-        <body>
+        <body
+          className={cn(
+            inter.className,
+            "min-h-screen bg-background font-sans antialiased flex flex-col"
+          )}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -31,6 +37,7 @@ export default function RootLayout({
           >
             <Header />
             {children}
+            <Toaster />
             <Footer />
           </ThemeProvider>
         </body>

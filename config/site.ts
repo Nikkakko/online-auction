@@ -19,6 +19,9 @@ export const siteConfig = {
   url: "https://skateshop.sadmn.com",
   ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
   links,
-  mainNav: [] satisfies MainNavItem[],
+  mainNav: [
+    { label: "Home", href: "/" },
+    { label: "Auctions", href: "/auctions" },
+  ] satisfies MainNavItem[],
   footerNav: [] satisfies FooterItem[],
 };

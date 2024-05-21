@@ -18,8 +18,16 @@ datasource db {
 }
 
 
+enum Status {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+  DELETED
+}
+
+
 model Item {
- id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
 
   title       String
@@ -39,12 +47,18 @@ model Item {
 }
 
 model Auction {
- id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  itemId      String   @unique @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String
+  slug        String   @unique
+  
   startTime   DateTime
   endTime     DateTime
+
+  
   highestBid  Float     @default(0)
+
   item       Item      @relation(fields: [itemId], references: [id])
+  itemId      String   @unique @db.ObjectId
   
   bids        Bid[]
 }
@@ -54,7 +68,6 @@ model Bid {
   userId      String
 
   amount      Float
-
 
   createdAt   DateTime  @default(now())
   

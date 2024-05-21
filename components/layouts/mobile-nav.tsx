@@ -1,3 +1,4 @@
+"use client";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { MainNavItem } from "@/types";
 import { useSelectedLayoutSegment } from "next/navigation";
@@ -18,3 +19,5 @@ const MobileNav: React.FC<MobileNavProps> = ({ items }) => {
 };
 
 export default MobileNav;
+
+
