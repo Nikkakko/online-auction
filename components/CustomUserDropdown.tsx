@@ -34,14 +34,28 @@ const CustomUserDropdown: React.FC<CustomUserDropdownProps> = ({}) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus:outline-none group select-none">
-        <Image
-          alt={user?.primaryEmailAddress?.emailAddress!}
-          src={user?.imageUrl}
-          width={30}
-          height={30}
-          className="rounded-full cursor-pointer group-hover:shadow-md transition-shadow duration-200"
-        />
+      <DropdownMenuTrigger
+        className="focus:outline-none group select-none cursor-pointer"
+        asChild
+      >
+        <div
+          className="border flex items-center gap-2 py-1 px-2 rounded bg-secondary
+          group-hover:shadow-md transition-shadow duration-200
+        "
+        >
+          <Image
+            alt={user?.primaryEmailAddress?.emailAddress!}
+            src={user?.imageUrl}
+            width={30}
+            height={30}
+            className="rounded-full"
+          />
+
+          <p className="text-sm font-semibold text-accent-foreground">
+            {user?.firstName ||
+              user?.primaryEmailAddress?.emailAddress!.split("@")[0]}
+          </p>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

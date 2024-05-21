@@ -34,6 +34,7 @@ model Item {
   description String
   imageUrl    String
   startingPrice Float
+  instandBuyPrice Float
 
   currentBid  Float     @default(0)
   bidInterval Float
@@ -51,11 +52,12 @@ model Auction {
   userId      String
   slug        String   @unique
   
-  startTime   DateTime
-  endTime     DateTime
+  startDate   DateTime
+  endDate     DateTime
 
   
   highestBid  Float     @default(0)
+  
 
   item       Item      @relation(fields: [itemId], references: [id])
   itemId      String   @unique @db.ObjectId

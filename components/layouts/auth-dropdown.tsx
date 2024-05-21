@@ -16,29 +16,16 @@ interface AuthDropdownProps {}
 
 const AuthDropdown: React.FC<AuthDropdownProps> = () => {
   return (
-    <div>
+    <>
       <SignedOut>
-        <Button>
+        <Button asChild>
           <SignInButton mode="modal" signUpForceRedirectUrl={"/"} />
         </Button>
       </SignedOut>
       <SignedIn>
-        {/* <div className="flex items-center gap-2">
-          <Link
-            href="/auction/create"
-            className={cn(
-              buttonVariants({
-                variant: "link",
-              })
-            )}
-          >
-            Create Auction
-          </Link>
-          <UserButton />
-        </div> */}
         <CustomUserDropdown />
       </SignedIn>
-    </div>
+    </>
   );
 };
 
