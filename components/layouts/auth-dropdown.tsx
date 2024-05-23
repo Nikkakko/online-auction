@@ -11,6 +11,7 @@ import type { User } from "@clerk/nextjs/server";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import CustomUserDropdown from "../CustomUserDropdown";
+import { ArrowRightCircleIcon, ArrowRightToLine } from "lucide-react";
 
 interface AuthDropdownProps {}
 
@@ -18,8 +19,9 @@ const AuthDropdown: React.FC<AuthDropdownProps> = () => {
   return (
     <>
       <SignedOut>
-        <Button asChild>
+        <Button variant="default">
           <SignInButton mode="modal" signUpForceRedirectUrl={"/"} />
+          <ArrowRightToLine className="ml-2 h-4 " />
         </Button>
       </SignedOut>
       <SignedIn>
