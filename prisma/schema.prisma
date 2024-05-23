@@ -32,13 +32,14 @@ model Item {
 
   title       String
   description String
-  imageUrl    String
+  images      String[]
+  status      Status   @default(ACTIVE)
   startingPrice Float
   instandBuyPrice Float
 
   currentBid  Float     @default(0)
-  bidInterval Float
-  endDate     DateTime
+  bidInterval Float    @default(100)
+ 
 
 
   createdAt   DateTime  @default(now())
@@ -52,16 +53,12 @@ model Auction {
   userId      String
   slug        String   @unique
   
-  startDate   DateTime
-  endDate     DateTime
-
+  startDate   DateTime @default(now())
+  endDate     DateTime 
   
-  highestBid  Float     @default(0)
-  
-
+  //relation
   item       Item      @relation(fields: [itemId], references: [id])
   itemId      String   @unique @db.ObjectId
-  
   bids        Bid[]
 }
 

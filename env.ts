@@ -5,6 +5,8 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     CLERK_SECRET_KEY: z.string().min(1),
+    UPLOADTHING_SECRET: z.string().min(1),
+    UPLOADTHING_APP_ID: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
@@ -15,6 +17,8 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+    UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   // experimental__runtimeEnv: {
