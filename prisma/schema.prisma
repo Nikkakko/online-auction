@@ -65,13 +65,17 @@ model Auction {
 model Bid {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
+  userName    String
 
   amount      Float
 
   createdAt   DateTime  @default(now())
   
 
-  auctionId   String   @unique @db.ObjectId
+  auctionId   String   @db.ObjectId
   auction     Auction   @relation(fields: [auctionId], references: [id])
+
+  @@index([auctionId], name: "auctionId")
+
   
 }
