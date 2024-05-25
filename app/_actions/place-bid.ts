@@ -26,12 +26,6 @@ export const placeBid = async (values: PlaceBid) => {
       };
     }
 
-    if (parsedValues.data?.amount < 1) {
-      return {
-        error: "Amount must be higher than 0",
-      };
-    }
-
     const auction = await db.auction.findFirst({
       where: {
         id: values.auctionId,
@@ -48,93 +42,43 @@ export const placeBid = async (values: PlaceBid) => {
     }
 
     //prevent bid if auction status is not active
-    if (auction.item.status !== "ACTIVE") {
+    if (auction.status !== "ACTIVE" || auction.endDate < new Date()) {
       return {
         error: "Auction is not active",
       };
     }
 
-    if (parsedValues.data.amount < auction.item.startingPrice) {
-      return {
-        error: "Amount must be higher than the starting price",
-      };
-    }
-
-    if (
-      parsedValues.data.amount <
-      auction.item.currentBid + auction.item.bidInterval
-    ) {
-      return {
-        error: "Amount must be higher than the current price + bid interval",
-      };
-    }
-
-    //prevent bid if bid is < than highest bid
-    const highestBid = await db.bid.findFirst({
-      where: {
-        auctionId: auction.id,
-      },
-      orderBy: {
-        amount: "desc",
-      },
-    });
-
-    if (!highestBid) {
-      return {
-        error: "No bids found",
-      };
-    }
-
-    if (highestBid?.amount >= parsedValues.data.amount) {
-      return {
-        error: "Amount must be higher than the highest bid",
-      };
-    }
-
+    //prevent bid if user is the owner of the auction
     if (auction.userId === user.id) {
       return {
         error: "You can't bid on your own auction",
       };
     }
 
-    if (auction.endDate < new Date()) {
-      return {
-        error: "Auction has ended",
-      };
-    }
-
-    // if bid is equal or highter than buy now price, end auction
-    if (parsedValues.data.amount >= auction.item.instandBuyPrice) {
-      await db.auction.update({
-        where: {
-          id: auction.id,
-        },
-        data: {
-          endDate: new Date(),
-          item: {
-            update: {
-              status: "COMPLETED",
-            },
-          },
-        },
-      });
-
-      revalidatePath(`/auction/${auction.slug}`);
-
-      return {
-        success: true,
-      };
-    }
+    const latestBidValue = auction.item.currentBid + auction.item.bidInterval;
 
     await db.bid.create({
       data: {
-        amount: parsedValues.data.amount,
         auctionId: auction.id,
         userId: user.id,
+        amount: latestBidValue,
         userName:
           user.fullName ||
           user.firstName ||
           user.emailAddresses[0].emailAddress.split("@")[0],
+      },
+    });
+
+    await db.auction.update({
+      where: {
+        id: auction.id,
+      },
+      data: {
+        item: {
+          update: {
+            currentBid: latestBidValue,
+          },
+        },
       },
     });
 

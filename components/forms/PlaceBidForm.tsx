@@ -30,7 +30,6 @@ const PlaceBidForm: React.FC<PlaceBidFormProps> = ({ auctionId }) => {
   const form = useForm<PlaceBid>({
     resolver: zodResolver(placeBidSchema),
     defaultValues: {
-      amount: 0,
       auctionId,
     },
   });
@@ -70,23 +69,6 @@ const PlaceBidForm: React.FC<PlaceBidFormProps> = ({ auctionId }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Amount</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. 100.00" {...field} step={0.01} />
-              </FormControl>
-              <FormDescription>
-                Enter the amount you want to bid.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <Button type="submit" disabled={isPending}>
           Place bid
         </Button>

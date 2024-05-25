@@ -33,7 +33,6 @@ model Item {
   title       String
   description String
   images      String[]
-  status      Status   @default(ACTIVE)
   startingPrice Float
   instandBuyPrice Float
 
@@ -52,6 +51,8 @@ model Auction {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String
   slug        String   @unique
+  status      Status   @default(ACTIVE)
+
   
   startDate   DateTime @default(now())
   endDate     DateTime 

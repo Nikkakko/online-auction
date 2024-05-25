@@ -14,7 +14,6 @@ export const createAuctionSchema = z.object({
       required_error: "Starting price is required",
       invalid_type_error: "Starting price must be a number",
     })
-    .int()
     .positive()
     .min(1, { message: "Starting price must be at least 1" }),
 

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { getCachedUser } from "@/lib/queries/user";
 import { env } from "@/env";
+import BidsTable from "@/components/BidsTable";
 
 interface AuctionSlugPageProps {
   params: {
@@ -91,7 +92,7 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
     <Shell variant="wrapper" className="py-12" as="main">
       <div className="grid grid-cols-1 grid-row-s1 lg:grid-cols-4 lg:grid-rows-2 gap-4 relative">
         <div className="lg:col-span-2 lg:row-span-2 col-span-1 row-span-1">
-          <div className="relative w-full h-full group  cursor-pointer rounded-xl overflow-hidden">
+          <div className="relative w-full h-[400px] group  cursor-pointer rounded-xl overflow-hidden">
             <Image
               src={auction.item.images[0]}
               alt={auction.item.title}
@@ -104,25 +105,26 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
             <ViewImages />
           </div>
         </div>
-        <div className="col-span-1 row-span-1">
-          {auction.item.images.slice(1, 5).map(image => (
-            <div
+
+        {auction.item.images.slice(1, 5).map(image => (
+          <div
+            key={image}
+            className={cn(
+              "relative w-full group h-[250px] object-cover  rounded-xl overflow-hidden cursor-pointer col-span-1 row-span-1"
+            )}
+          >
+            <Image
               key={image}
-              className="relative w-full group h-[250px] object-cover  rounded-xl overflow-hidden cursor-pointer"
-            >
-              <Image
-                key={image}
-                src={image}
-                fill
-                alt={auction.item.title}
-                className="object-cover "
-                priority
-                quality={100}
-              />
-              <ViewImages />
-            </div>
-          ))}
-        </div>
+              src={image}
+              fill
+              alt={auction.item.title}
+              className="object-cover "
+              priority
+              quality={100}
+            />
+            <ViewImages />
+          </div>
+        ))}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
         <div className="flex flex-col">
@@ -132,7 +134,7 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
             </h1>
             <div className="flex items-center justify-between w-full">
               <Badge variant={"secondary"} className="rounded-md">
-                {auction.item.status}
+                {auction.status}
               </Badge>
               <span className="text-gray-600">
                 Ends on : {format(new Date(auction.endDate), "dd.MM.yyyy")}
@@ -145,7 +147,10 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
               <div key={info.id} className="flex flex-col gap-2">
                 <span className="text-primary">{info.label}</span>
                 <span className="text-xl font-semibold text-foreground">
-                  {formatPrice(info.value)}
+                  {formatPrice(info.value, {
+                    minimumFractionDigits: 2,
+                    minimumIntegerDigits: 1,
+                  })}
                 </span>
               </div>
             ))}
@@ -182,25 +187,8 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
               <PlaceBidForm auctionId={auction.id} />
             </CardContent>
             <CardFooter>
-              {hasBids ? (
-                <div className="flex flex-col gap-2">
-                  <span className="text-primary">Bids</span>
-                  <div className="grid grid-cols-1 gap-2">
-                    {auction.bids.map(bid => (
-                      <div key={bid.id} className="flex justify-between gap-2">
-                        <span className="text-gray-600">
-                          {format(new Date(bid.createdAt), "dd.MM.yyyy")}
-                        </span>
-                        <span className="text-foreground">
-                          {formatPrice(bid.amount)}
-                        </span>
-                        <span className="text-foreground">{bid.userName}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <span className="text-gray-600">No bids yet</span>
+              {hasBids && (
+                <BidsTable bids={auction.bids} status={auction.status} />
               )}
             </CardFooter>
           </Card>
