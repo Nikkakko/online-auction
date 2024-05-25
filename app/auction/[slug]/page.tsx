@@ -187,9 +187,7 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
               <PlaceBidForm auctionId={auction.id} />
             </CardContent>
             <CardFooter>
-              {hasBids && (
-                <BidsTable bids={auction.bids} status={auction.status} />
-              )}
+              {hasBids && <BidsTable bids={auction.bids} />}
             </CardFooter>
           </Card>
         )}
