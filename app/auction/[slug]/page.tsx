@@ -92,7 +92,7 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
     <Shell variant="wrapper" className="py-12" as="main">
       <div className="grid grid-cols-1 grid-row-s1 lg:grid-cols-4 lg:grid-rows-2 gap-4 relative">
         <div className="lg:col-span-2 lg:row-span-2 col-span-1 row-span-1">
-          <div className="relative w-full h-[400px] group  cursor-pointer rounded-xl overflow-hidden">
+          <div className="relative w-full h-full group  cursor-pointer rounded-xl overflow-hidden">
             <Image
               src={auction.item.images[0]}
               alt={auction.item.title}

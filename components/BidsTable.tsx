@@ -26,6 +26,8 @@ import {
 import { formatDate } from "date-fns";
 import { cn, formatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
+import { ArrowUpDown } from "lucide-react";
+import { DataTablePagination } from "./DataTablePagination";
 
 interface BidsTableProps {
   bids: Bid[];
@@ -33,20 +35,44 @@ interface BidsTableProps {
 
 export const columns: ColumnDef<Bid>[] = [
   {
+    id: "userName",
     accessorKey: "userName",
     header: "Bidder",
     cell: ({ row }) => <div>{row.getValue("userName")}</div>,
   },
   {
+    id: "createdAt",
     accessorKey: "createdAt",
-    header: "Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div>{formatDate(row.getValue("createdAt"), "dd.MM.yyyy HH:mm")}</div>
     ),
   },
   {
+    id: "amount",
     accessorKey: "amount",
-    header: "Amount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className=""
+        >
+          Amount
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => (
       <div className="text-right">
         {formatPrice(row.getValue("amount"), {
@@ -59,14 +85,21 @@ export const columns: ColumnDef<Bid>[] = [
 ];
 
 const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data: bids,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    // limit the number of rows to display
+
+    // sorting
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
 
     initialState: {
       sorting: [
@@ -94,7 +127,7 @@ const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
                       key={header.id}
                       className={
                         cn(
-                          header.column.columnDef.header === "Amount" &&
+                          header.column.columnDef.id === "amount" &&
                             "text-right"
                         )
                         // Amount header text-right
@@ -142,25 +175,7 @@ const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 };
