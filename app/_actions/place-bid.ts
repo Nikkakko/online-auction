@@ -46,7 +46,7 @@ export const placeBid = async (values: PlaceBid) => {
       };
     }
 
-    //prevent bid if auction status is not active
+    //prevent bid if auction status is not active or auction has ended
     if (auction.status !== "ACTIVE" || auction.endDate < new Date()) {
       return {
         error: "Auction is not active",

@@ -1,5 +1,6 @@
 "use client";
 import { slugify } from "@/lib/utils";
+import { useUser } from "@clerk/nextjs";
 import {
   NotificationFeedPopover,
   NotificationIconButton,
@@ -12,6 +13,9 @@ interface NotificationFeedProps {}
 const NotificationFeed: React.FC<NotificationFeedProps> = ({}) => {
   const [isVisible, setIsVisible] = React.useState(false);
   const notifButtonRef = React.useRef(null);
+  const { isSignedIn } = useUser();
+
+  if (!isSignedIn) return null;
   return (
     <div>
       <NotificationIconButton

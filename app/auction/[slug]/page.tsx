@@ -88,7 +88,11 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
     },
   ];
 
-  const canPlaceBid = auction.userId !== user?.id;
+  const canPlaceBid =
+    auction.userId !== user?.id || auction.endDate < new Date();
+
+  console.log(canPlaceBid, "canPlaceBid");
+
   return (
     <Shell variant="wrapper" className="py-12" as="main">
       <div className="grid grid-cols-1 grid-row-s1 lg:grid-cols-4 lg:grid-rows-2 gap-4 relative">
@@ -181,11 +185,11 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
           </Card>
         ) : (
           <Card>
-            <CardHeader>
-              <CardTitle>Place a bid</CardTitle>
+            <CardHeader className={cn(!canPlaceBid && "p-0 ")}>
+              {canPlaceBid && <CardTitle>Place a bid</CardTitle>}
             </CardHeader>
             <CardContent>
-              {!canPlaceBid && <PlaceBidForm auctionId={auction.id} />}
+              {canPlaceBid && <PlaceBidForm auctionId={auction.id} />}
             </CardContent>
             <CardFooter>
               {hasBids && <DataTable columns={columns} data={auction.bids} />}
