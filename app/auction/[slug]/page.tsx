@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { getCachedUser } from "@/lib/queries/user";
 import { env } from "@/env";
-import BidsTable from "@/components/BidsTable";
+import BidsTable from "@/components/table/BidsTable";
 
 interface AuctionSlugPageProps {
   params: {

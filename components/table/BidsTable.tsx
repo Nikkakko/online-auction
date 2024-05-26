@@ -23,66 +23,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { formatDate } from "date-fns";
-import { cn, formatPrice } from "@/lib/utils";
-import { Button } from "./ui/button";
-import { ArrowUpDown } from "lucide-react";
-import { DataTablePagination } from "./DataTablePagination";
+
+import { cn } from "@/lib/utils";
+import { columns } from "@/components/table/Columns";
+import { DataTablePagination } from "@/components/table/DataTablePagination";
 
 interface BidsTableProps {
   bids: Bid[];
 }
-
-export const columns: ColumnDef<Bid>[] = [
-  {
-    id: "userName",
-    accessorKey: "userName",
-    header: "Bidder",
-    cell: ({ row }) => <div>{row.getValue("userName")}</div>,
-  },
-  {
-    id: "createdAt",
-    accessorKey: "createdAt",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div>{formatDate(row.getValue("createdAt"), "dd.MM.yyyy HH:mm")}</div>
-    ),
-  },
-  {
-    id: "amount",
-    accessorKey: "amount",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className=""
-        >
-          Amount
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="text-right">
-        {formatPrice(row.getValue("amount"), {
-          minimumFractionDigits: 2,
-          minimumIntegerDigits: 1,
-        })}
-      </div>
-    ),
-  },
-];
 
 const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -92,7 +40,6 @@ const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
 
     // sorting
     getSortedRowModel: getSortedRowModel(),
