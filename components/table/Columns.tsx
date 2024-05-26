@@ -32,7 +32,9 @@ export const columns: ColumnDef<Bid>[] = [
       );
     },
     cell: ({ row }) => (
-      <div>{formatDate(row.getValue("createdAt"), "dd.MM.yyyy HH:mm")}</div>
+      <div>
+        {formatDate(row.getValue("createdAt"), "dd/MMMM/yyyy HH:mm:ss")}
+      </div>
     ),
   },
   {

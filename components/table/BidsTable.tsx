@@ -28,15 +28,18 @@ import { cn } from "@/lib/utils";
 import { columns } from "@/components/table/Columns";
 import { DataTablePagination } from "@/components/table/DataTablePagination";
 
-interface BidsTableProps {
-  bids: Bid[];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
-
-const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
-    data: bids,
+    data: data,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -48,11 +51,12 @@ const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
       sorting,
     },
 
+    // initial state
     initialState: {
       sorting: [
         {
           id: "createdAt",
-          desc: true,
+          desc: false,
         },
       ],
       pagination: {
@@ -125,6 +129,4 @@ const BidsTable: React.FC<BidsTableProps> = ({ bids }) => {
       <DataTablePagination table={table} />
     </div>
   );
-};
-
-export default BidsTable;
+}

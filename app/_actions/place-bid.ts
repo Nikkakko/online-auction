@@ -1,5 +1,7 @@
 "use server";
 import { getCachedUser } from "@/lib/queries/user";
+import { Knock } from "@knocklabs/node";
+import { env } from "@/env";
 
 import z from "zod";
 import db from "@/lib/db";
@@ -7,6 +9,9 @@ import db from "@/lib/db";
 import { getErrorMessage } from "@/lib/handle-error";
 import { PlaceBid, placeBidSchema } from "@/lib/validation/place-bid";
 import { revalidatePath } from "next/cache";
+import { clerkClient } from "@clerk/nextjs/server";
+
+const knock = new Knock(env.KNOCK_SECRET_KEY);
 
 export const placeBid = async (values: PlaceBid) => {
   const user = await getCachedUser();
@@ -81,6 +86,66 @@ export const placeBid = async (values: PlaceBid) => {
         },
       },
     });
+
+    //TODO: send notification to everyone who has bid on the auction
+
+    const currentBids = await db.bid.findMany({
+      where: {
+        auctionId: auction.id,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    });
+
+    const recipients: {
+      id: string;
+      name: string;
+      email: string;
+    }[] = [];
+
+    const recipientEmails = new Map<string, string>();
+    const userIds = currentBids.map(bid => bid.userId);
+
+    // get each user email with userIds from clerkClient
+    const userPromises = userIds.map(async userId => {
+      const userResponse = await clerkClient.users.getUser(userId);
+      recipientEmails.set(userId, userResponse.emailAddresses[0].emailAddress);
+    });
+
+    await Promise.all(userPromises);
+
+    for (const { userId, userName } of currentBids) {
+      if (
+        userId !== user.id &&
+        !recipients.some(recipient => recipient.id === userId)
+      ) {
+        recipients.push({
+          id: userId,
+          name: userName,
+          email: recipientEmails.get(userId) || "",
+        });
+      }
+    }
+
+    if (recipients.length > 0) {
+      await knock.workflows.trigger("user-placed-bid", {
+        actor: {
+          id: user.id,
+          name: user.fullName ?? "Anonymous",
+          email: user.emailAddresses[0].emailAddress,
+          collection: "users",
+        },
+        recipients,
+        data: {
+          auctionId: auction.id,
+          bidAmount: latestBidValue,
+          itemName: auction.item.title,
+        },
+      });
+    }
 
     revalidatePath(`/auction/${auction.slug}`);
 

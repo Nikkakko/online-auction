@@ -19,8 +19,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getCachedUser } from "@/lib/queries/user";
-import { env } from "@/env";
-import BidsTable from "@/components/table/BidsTable";
+import { DataTable } from "@/components/table/BidsTable";
+import { columns } from "@/components/table/Columns";
 
 interface AuctionSlugPageProps {
   params: {
@@ -88,6 +88,7 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
     },
   ];
 
+  const canPlaceBid = auction.userId !== user?.id;
   return (
     <Shell variant="wrapper" className="py-12" as="main">
       <div className="grid grid-cols-1 grid-row-s1 lg:grid-cols-4 lg:grid-rows-2 gap-4 relative">
@@ -184,10 +185,10 @@ const AuctionSlugPage: React.FC<AuctionSlugPageProps> = async ({ params }) => {
               <CardTitle>Place a bid</CardTitle>
             </CardHeader>
             <CardContent>
-              <PlaceBidForm auctionId={auction.id} />
+              {!canPlaceBid && <PlaceBidForm auctionId={auction.id} />}
             </CardContent>
             <CardFooter>
-              {hasBids && <BidsTable bids={auction.bids} />}
+              {hasBids && <DataTable columns={columns} data={auction.bids} />}
             </CardFooter>
           </Card>
         )}
